@@ -11,11 +11,11 @@ Art:
 Maxwell Jones (UChicago 24' Economics major)
 
 Controls:
-1 switches to focused camera
-2 switches to fixed camera
-TAB switched between shooting and flying.
-SPACE flies when in flying mode and shoots when in shooting mode.
-MOUSE indicates direction of plane.
+* 1 switches to focused camera,
+* 2 switches to fixed camera,
+* TAB switched between shooting and flying,
+* SPACE flies when in flying mode and shoots when in shooting mode,
+* MOUSE indicates direction of plane.
 
 Actions:
 Killing flying enemies gives you points
