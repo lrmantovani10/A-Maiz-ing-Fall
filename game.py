@@ -1,4 +1,4 @@
-import pygame, random, time, math, os
+import pygame, random, time, math
 from random import *
 vec = pygame.math.Vector2
 from abc import ABC, abstractmethod
@@ -10,7 +10,6 @@ p1, p2 = int(0.9 * float(infoparam.current_w)), int(0.9 * float(infoparam.curren
 screen = pygame.display.set_mode((p1, p2))
 game_size_x = 5000
 game_size_y = 3000
-backgroundimg = pygame.image.load("Bkg.png")
 corn = pygame.image.load("corn.png")
 cloud = pygame.image.load("cloud.png")
 sunrise = pygame.image.load("sunrise.png")
@@ -109,8 +108,8 @@ class Player(Actor):
     def __init__(self):
         Actor.__init__(
             self,
-            1080,
-            520,
+            p1//2,
+            p2//2,
             32,
             32,
         )
@@ -181,17 +180,17 @@ class Player(Actor):
 
         player.y_momentum += 3
 
-        if self.x_momentum > 30:
-            self.x_momentum = 30
+        if self.x_momentum > 50:
+            self.x_momentum = 50
 
-        if self.x_momentum < -30:
-            self.x_momentum = -30
+        if self.x_momentum < -50:
+            self.x_momentum = -50
 
-        if self.y_momentum > 30:
-            self.y_momentum = 30
+        if self.y_momentum > 50:
+            self.y_momentum = 50
 
-        if self.y_momentum < -30:
-            self.y_momentum = -30
+        if self.y_momentum < -50:
+            self.y_momentum = -50
 
         self.pos_x += self.x_move + self.x_momentum
         self.pos_y += self.y_move + self.y_momentum
@@ -237,7 +236,7 @@ class Projectile(Actor):
         global e_list
         screen.blit(self.image, (self.pos_x-camera.offset.x, self.pos_y-camera.offset.y))
         for enemy in e_list:    
-            if (self.pos_x<=enemy.x<=self.pos_x+self.w or self.pos_x<=enemy.x+enemy.w<=self.pos_x+self.w) and (self.pos_y<=enemy.y<=self.pos_y+self.h or self.pos_y<=enemy.y+enemy.h<=self.pos_y+self.h):
+            if (enemy.x<=self.pos_x<=enemy.x+enemy.w or enemy.x<=self.pos_x+self.w<=enemy.x+enemy.w) and (enemy.y<=self.pos_y<=enemy.y+enemy.h or enemy.y<=self.pos_y+self.h<=enemy.y+enemy.h):
                 kill_enemy(e_list.index(enemy))
     def move(self):
         self.pos_x += self.speed * math.cos(self.angle)
@@ -278,18 +277,26 @@ def redraw():
     if player.pos_y+player.h<=0:
         game_over = True
     else:
-        pygame.draw.rect(screen, (0,0,0), test_rect_2)
+        pygame.draw.rect(screen, (110,182,255), test_rect_2)
 
     if player.pos_x+player.w>=game_size_x:
         game_over = True
     else:
-        pygame.draw.rect(screen, (0, 0, 0), test_rect_3)
+        pygame.draw.rect(screen, (110,182,255), test_rect_3)
 
     if player.pos_x+player.w<=0:
         game_over = True
     else:
-        pygame.draw.rect(screen, (0, 0, 0), test_rect_4)
+        pygame.draw.rect(screen, (110,182,255), test_rect_4)
     
+    screen.blit(waterhouse1, (1100-watprop-camera.offset.x,0-camera.offset.y))
+    screen.blit(waterhouse2, (-1050+game_size_x-camera.offset.x,0-camera.offset.y))
+    cloud_par = cloud.get_width()
+    cloudh = cloud.get_height()
+    for number in range(math.ceil(game_size_x/cloud_par)*-2,math.ceil(game_size_x/cloud_par)*2):
+            screen.blit(cloud, (0+(number*cloud_par)-camera.offset.x,0-40-camera.offset.y))
+            screen.blit(cloud, (0+(number/1.5*cloud_par)-camera.offset.x,0-40-camera.offset.y))
+            screen.blit(cloud, (0+(number/1.2*cloud_par)-camera.offset.x,0-40-camera.offset.y))
     camera.scroll()
     font = pygame.font.SysFont('Arial',50)
     scoretext = font.render('Score: '+str(score), True, (255,100,100))    
@@ -412,7 +419,7 @@ def randomize():
         clear = True
         for item1 in rd_list[0]:
             for item2 in rd_list[1]:
-                while item1-(p1/14)<=entry1<=item1+(p1/14) and item2-(p1/14)<=entry1<=item2+(p1/14):
+                while (item1-(p1/14)<=entry1<=item1+(p1/14) and item2-(p1/14)<=entry1<=item2+(p1/14)) or (player.pos_x-150<entry1<player.pos_x+player.w+150 and player.pos_y-150<entry2<player.pos_y+player.h+150):
                     entry1 = randint(0,game_size_x)
                     entry2 = randint(0,game_size_y)
                     clear=False
@@ -437,7 +444,7 @@ def spawn_enemy():
     r_list.append(randint(1,4))
 
 
-for f in range(1,10):
+for f in range(1,5):
     spawn_enemy()
 
 # Function receives index of killed enemy in e_list and kills it
@@ -448,6 +455,7 @@ def kill_enemy(dead_indx):
     for sub_list in rd_list:
         sub_list.pop(dead_indx)
     spawn_enemy()
+    spawn_enemy()
 
 
 clouds_list = [[],[]]
@@ -456,103 +464,134 @@ for item in range(1,20):
     clouds_list[1].append(randint(100,2700))
 
 # Running the game
-while not game_over:
-    if intro:
-        screen.fill((0,0,0))
-        bkga = pygame.image.load("Intro.png")
-        screen.blit(bkga, (160,40))
-        for event in pygame.event.get():
-            # Getting the mouse coordinates
-            mouse = pygame.mouse.get_pos()
-            if event.type == pygame.QUIT:
-                pygame.quit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                intro = False
-        pygame.display.update()
-    else:
+game_escape = False
+while game_escape == False:
+    # Running the game
+    while not game_over:
+        if intro:
+            screen.fill((0, 0, 0))
+            bkga = pygame.image.load("Intro.png")
+            screen.blit(bkga, (160, 40))
+            for event in pygame.event.get():
+                # Getting the mouse coordinates
+                mouse = pygame.mouse.get_pos()
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    intro = False
+            pygame.display.update()
+        else:
 
-        screen.blit(backgroundimg, (0, 0))
-        for item in clouds_list[0]:
-            screen.blit(cloud, (item-camera.offset.x,(clouds_list[1][clouds_list[0].index(item)]-camera.offset.y)))
+            screen.fill((110,182,255))
+            for item in clouds_list[0]:
+                screen.blit(
+                    cloud,
+                    (
+                        item - camera.offset.x,
+                        (clouds_list[1][clouds_list[0].index(item)] - camera.offset.y),
+                    ),
+                )
 
-        screen.blit(sunrise, (p1/1.2-camera.offset.x,p2/10-camera.offset.y))
-        screen.blit(waterhouse1, (950-watprop-camera.offset.x,0-camera.offset.y))
-        screen.blit(waterhouse2, (-950+game_size_x-camera.offset.x,0-camera.offset.y))
-        for number in range(math.ceil(game_size_x/ca)*-2,math.ceil(game_size_x/ca)*2):
-            screen.blit(corn, (0+(number*ca)-camera.offset.x,game_size_y-ca-camera.offset.y))
-        player.x_move = 0
-        player.y_move = 0
+            
+            screen.blit(sunrise, (p1/1.2-camera.offset.x,-1000-camera.offset.y))
+            
+            for number in range(math.ceil(game_size_x / ca) * -2, math.ceil(game_size_x / ca) * 2):
+                screen.blit(
+                    corn,
+                    (
+                        0 + (number * ca) - camera.offset.x,
+                        game_size_y - ca - camera.offset.y,
+                    ),
+                )
+            player.x_move = 0
+            player.y_move = 0
 
-        for event in pygame.event.get():
-            # Getting the mouse coordinates
-            mouse = pygame.mouse.get_pos()
-            if event.type == pygame.QUIT:
-                pygame.quit()
+            for event in pygame.event.get():
+                # Getting the mouse coordinates
+                mouse = pygame.mouse.get_pos()
+                if event.type == pygame.QUIT:
+                    pygame.quit()
 
-            if event.type == pygame.MOUSEMOTION:
-                player.rotate()
+                if event.type == pygame.MOUSEMOTION:
+                    player.rotate()
 
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    if player.mode == 1:
-                        player_move = True
-                    if player.mode == 2:
-                        projectiles.append(Projectile())
-                
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        if player.mode == 1:
+                            player_move = True
+                        if player.mode == 2:
+                            projectiles.append(Projectile())
 
-                if event.key == pygame.K_1:
-                    camera.setmethod(follow)
+                    if event.key == pygame.K_1:
+                        camera.setmethod(follow)
 
-                elif event.key == pygame.K_2:
-                    camera.setmethod(none)
+                    elif event.key == pygame.K_2:
+                        camera.setmethod(none)
 
-                if event.key == pygame.K_TAB:
-                    if player.mode == 1:
-                        player.mode = 2
+                    if event.key == pygame.K_TAB:
+                        if player.mode == 1:
+                            player.mode = 2
+                            player_move = False
+                            player.original_image = pygame.image.load("pp2.png")
+                        elif player.mode == 2:
+                            player.mode = 1
+                            player.original_image = pygame.image.load("pp1.png")
+
+                if event.type == pygame.KEYUP:
+                    if event.key == pygame.K_SPACE:
                         player_move = False
-                        player.original_image = pygame.image.load("pp2.png")
-                    elif player.mode == 2:
-                        player.mode = 1
-                        player.original_image = pygame.image.load("pp1.png")
 
-            if event.type == pygame.KEYUP:
-                if event.key == pygame.K_SPACE:
-                    player_move = False
+            for projectile in projectiles:
+                if projectile.pos_x < game_size_x and projectile.pos_x > 0:
+                    projectile.move()
 
-        for projectile in projectiles:
-            if projectile.pos_x < game_size_x and projectile.pos_x > 0:
-                projectile.move()
+                else:
+                    projectiles.pop(projectiles.index(projectile))
 
-            else:
-                projectiles.pop(projectiles.index(projectile))
+            redraw()
 
-        redraw()
+            # Draw the game
+            pygame.display.update()
+            # Frames per second
+            clock.tick(30)
 
-        # text_display()
-        # Draw the game
+    while game_over:
+        screen.fill((0,0,0))
+        bomb = pygame.image.load("game_over.png")
+        font = pygame.font.SysFont('Arial',50)
+        scoretext = font.render('Score: '+str(score), True, (255,100,100))    
+        screen.blit(scoretext,(p1-400,0+p2/10))
+        mtext = font.render('Play Again?', True, (255,100,100))    
+        mtext1 = font.render('Press Enter', True, (255,100,100)) 
+        screen.blit(mtext,(p1-400,0+p2/1.5))
+        screen.blit(mtext1,(p1-400,0+p2/1.3))
+        screen.blit(bomb,((p1/2)-bomb.get_width()/2,(p2/2)-bomb.get_height()/2))
         pygame.display.update()
-        # Frames per second
-        clock.tick(30)
-def startf():
-    os.startfile("game.py")
+        token = 0
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    game_escape = True
+                    token = 1
+                elif event.key == pygame.K_RETURN:
+                    score = 0
+                    token = 1
+                    game_over = False
+                    player = Player()
+                    camera = Camera(player)
+                    # none = none(camera, player)
+                    follow = Follow(camera, player)
+                    border = Border(camera, player)
+                    camera.setmethod(follow)
+                    player_move = False
+                    projectiles = []
 
-while game_over:
-    screen.fill((0,0,0))
-    bomb = pygame.image.load("game_over.png")
-    font = pygame.font.SysFont('Arial',50)
-    scoretext = font.render('Score: '+str(score), True, (255,100,100))    
-    screen.blit(scoretext,(p1-400,0+p2/10))
-    mtext = font.render('Play Again?', True, (255,100,100))    
-    screen.blit(mtext,(p1-400,0+p2/2))
-    screen.blit(bomb,(0,0))
-    for event in pygame.event.get():
-        # Getting the mouse coordinates
-        mouse = pygame.mouse.get_pos()
-        if event.type == pygame.QUIT:
-            pygame.quit()
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            startf()
-            pygame.quit()
-            score = 0
-    pygame.display.update()
+        if token == 0:
+            pygame.display.update()
+        else:
+            break
+
+pygame.quit()
     
