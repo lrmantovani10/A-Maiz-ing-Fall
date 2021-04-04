@@ -1,5 +1,5 @@
 # A-Maiz-ing-Fall
-Arcade Style Python Game for the Uncommon Hacks 2021 hackathon.
+Arcade Style Python Game developed by Lucas Mantovani and Avery Zhou in one weekend.
 
 Programmed by:
 
