@@ -180,17 +180,17 @@ class Player(Actor):
 
         player.y_momentum += 3
 
-        if self.x_momentum > 50:
-            self.x_momentum = 50
+        if self.x_momentum > 40:
+            self.x_momentum = 40
 
-        if self.x_momentum < -50:
-            self.x_momentum = -50
+        if self.x_momentum < -40:
+            self.x_momentum = -40
 
-        if self.y_momentum > 50:
-            self.y_momentum = 50
+        if self.y_momentum > 40:
+            self.y_momentum = 40
 
-        if self.y_momentum < -50:
-            self.y_momentum = -50
+        if self.y_momentum < -40:
+            self.y_momentum = -40
 
         self.pos_x += self.x_move + self.x_momentum
         self.pos_y += self.y_move + self.y_momentum
@@ -471,7 +471,7 @@ while game_escape == False:
         if intro:
             screen.fill((0, 0, 0))
             bkga = pygame.image.load("Intro.png")
-            screen.blit(bkga, (160, 40))
+            screen.blit(bkga,((p1/2)-bkga.get_width()/2,(p2/2)-bkga.get_height()/2))
             for event in pygame.event.get():
                 # Getting the mouse coordinates
                 mouse = pygame.mouse.get_pos()
