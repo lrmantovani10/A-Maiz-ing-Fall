@@ -3,7 +3,7 @@ Arcade Style Python Game for the Uncommon Hacks 2021 hackathon.
 
 Programmed by:
 
-Avery Zhou (https://github.com/AveryZhou)
+Avery Zhou (https://github.com/AveryZhou), 
 Lucas Mantovani (https://github.com/lrmantovani10)
 
 Art:
