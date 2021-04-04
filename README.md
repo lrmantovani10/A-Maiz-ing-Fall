@@ -1,5 +1,5 @@
 # A-Maiz-ing-Fall
-Python Game for the Uncommon Hacks hackathon.
+Python Game for the Uncommon Hacks 2021 hackathon.
 
 Programmed by:
 
