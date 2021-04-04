@@ -18,5 +18,5 @@ Controls:
 * MOUSE indicates direction of plane.
 
 Actions:
-Killing flying enemies gives you points
-Hitting the world limits or colliding with enemies kills you
+* Killing flying enemies gives you points
+* Hitting the world limits or colliding with enemies kills you
