@@ -3,12 +3,12 @@ Python Game for the Uncommon Hacks 2021 hackathon.
 
 Programmed by:
 
-Avery Zhou
-Lucas Mantovani
+Avery Zhou (https://github.com/AveryZhou)
+Lucas Mantovani (https://github.com/lrmantovani10)
 
 Art:
 
-Maxwell Jones
+Maxwell Jones (UChicago 24' Economics major)
 
 Controls:
 1 switches to focused camera
