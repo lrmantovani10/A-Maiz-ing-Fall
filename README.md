@@ -20,3 +20,6 @@ Controls:
 Actions:
 * Killing flying enemies gives you points
 * Hitting the world limits or colliding with enemies kills you
+![intro](https://user-images.githubusercontent.com/11562529/113814943-0acb7200-9738-11eb-903e-d048cc10eb47.png)
+![Game_Created](https://user-images.githubusercontent.com/11562529/113814921-043cfa80-9738-11eb-909a-e7e4377f2211.PNG)
+
